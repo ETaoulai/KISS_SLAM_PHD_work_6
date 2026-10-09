@@ -573,6 +573,9 @@ class SlamPipeline(OdometryPipeline):
         local_maps_dir = os.path.join(self.results_dir, "local_maps")
         os.makedirs(local_maps_dir, exist_ok=True)
         self.kiss_slam.optimizer.write_graph(os.path.join(local_maps_dir, "local_map_graph.g2o"))
+        if os.environ.get("KISS_NO_PLYS"):              # #248: batches that only need the trajectory (and the graph, for replay_backend):
+            print("KissSLAM| local-map plys not written (KISS_NO_PLYS)")   # the plys are ~94 % of a car run's size
+            return
         plys_dir = os.path.join(local_maps_dir, "plys")
         os.makedirs(plys_dir, exist_ok=True)
         print("KissSLAM| Writing Local Maps on Disk")
