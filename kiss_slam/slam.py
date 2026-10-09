@@ -778,8 +778,9 @@ class KissSLAM:
                 M, n_inl = self._motion_futures.popleft().result()
             else:
                 M, n_inl = self._image_motion_est.motion(frame, timestamps, intensity, ring)
-                # Diagnostic record (#086): the image motion of every scan as estimated, and its RANSAC inliers.
-                self.image_motion_log.append((self._frame_counter, np.nan if M is None else np.asarray(M, float), n_inl))
+            # Diagnostic record (#086): the image motion of every scan as estimated, and its RANSAC inliers - also with
+            # --parallel (9/10: it was written only in the serial branch, so parallel runs had no image_motions.npz).
+            self.image_motion_log.append((self._frame_counter, np.nan if M is None else np.asarray(M, float), n_inl))
             self._cur_inliers = n_inl                     # #200
         if M is None:                         # failed, or rejected by the plausibility gate (#054)
             self.n_image_motion_failures += 1

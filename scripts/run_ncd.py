@@ -132,8 +132,10 @@ def main():
         config.image_deskew.rotation_cv_weight = float(opts.get("rot-cv", 0.0))
         if "cv-blend" in opts:                                   # #131: adaptive blend of the image motion and the constant velocity
             config.image_deskew.cv_blend = opts["cv-blend"]
-            config.image_deskew.cv_blend_window = int(opts.get("cv-blend-window", 20))
-            config.image_deskew.cv_blend_part = opts.get("cv-blend-part", "full")     # #137: full | rotation
+        if "cv-blend-window" in opts:                            # 9/10: read on their own, as --cv-blend-use (#217) - they were dropped
+            config.image_deskew.cv_blend_window = int(opts["cv-blend-window"])   # without --cv-blend since the blend became the default
+        if "cv-blend-part" in opts:
+            config.image_deskew.cv_blend_part = opts["cv-blend-part"]           # #137: full | rotation
         if "cv-blend-use" in opts:                               # #137: both | deskew (default: the config, deskew on ral_method) - #217: read on its own,
             config.image_deskew.cv_blend_use = opts["cv-blend-use"]   # it was ignored without --cv-blend since the blend became the default
         if "--multi-baseline" in sys.argv:                       # #130: the motion fit with the matches of k-2 <-> k too
@@ -165,6 +167,8 @@ def main():
             config.image_deskew.gate_min_matches = int(opts.get("gate-min", 0))    # 0 = off (#054: Blenheim has few matches everywhere)
             config.image_deskew.gate_max_rotation_deg = float(opts.get("gate-rot", 10.0))
             config.image_deskew.gate_max_rotation_change_deg = float(opts.get("gate-drot", 8.0))
+            if "fallback" not in opts and config.image_deskew.fallback != "constant_velocity":   # 9/10: say it - it replaces C's fallback
+                print(f"[run_ncd] --gate: fallback {config.image_deskew.fallback} -> constant_velocity (#054); pass --fallback=... to keep another", flush=True)
             config.image_deskew.fallback = "constant_velocity"
             config.image_deskew.save_rejected_dir = str(out / "rejected_pairs")
         if "--save-failed" in sys.argv:                          # panoramas + matches of every scan whose intensity motion failed

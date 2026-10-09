@@ -41,7 +41,7 @@ DROP_STATIONARY = False
 BEARING_MIN_PAIRS = 20
 GUIDED_WINDOW = None
 GUIDED_ROWS = 4
-GUIDED_K = 16
+GUIDED_K = 16                    # unused since 9/10 (the Python fallback searches the whole window, as the C++)
 GUIDED_SHIFT = 0.0                     # #088: centre of the window, columns - the median column shift of the previous scan's matches
 GUIDED_WINDOW_SAVED = None
 GUIDED_PREDICTION = "shift"            # #089: window centre - "shift" (median column shift of the previous scan, #088) or "motion"
@@ -667,7 +667,7 @@ def fit_time(p, tp, q, tq, M0, model="cv"):
             x = np.concatenate([x, np.zeros(extra)])    # start from the constant-velocity solution
         for _ in range(3):
             A = _fit_weights(q[keep])
-            if A is None and _fit_cpp is not None and IMAGE_CPP == "all" and FIT_JAC == "analytic":   # #182: the same cost in C++
+            if A is None and _fit_cpp is not None and IMAGE_CPP == "all" and FIT_JAC == "analytic" and len(x) <= 12:   # #182: the same cost in C++ (cv / car / ca only - 9/10: the C++ has no cubic terms, `cub` came back as `car`)
                 x = _fit_cpp.fit_soft_l1(x, p[keep], tp[keep], q[keep], tq[keep], 0.05)
             elif A is None:
                 x = least_squares(residual, x, args=(p[keep], tp[keep], q[keep], tq[keep]),
@@ -1037,7 +1037,7 @@ def guided_matches(kp1, d1, kp2, d2, shift=0.0, window=None, centres=None):
     """Matches of kp1 among the kp2 within GUIDED_WINDOW columns / GUIDED_ROWS rings of the same pixel (#087), as cv2.DMatch.
 
     Consecutive scans are 0.1 s apart: a feature moves a few pixels (fast rotation ~30), so a look-alike elsewhere in the panorama
-    (repeated facades) cannot win, and the cost is N x GUIDED_K descriptor distances instead of N x M.  Ratio test (RATIO) among the
+    (repeated facades) cannot win, and the cost is N x (keypoints in the window) descriptor distances instead of N x M.  Ratio test (RATIO) among the
     candidates of the window; one candidate only is accepted when its distance is below the median best distance."""
     if len(kp1) < 2 or len(kp2) < 2:
         return []
@@ -1054,22 +1054,30 @@ def guided_matches(kp1, d1, kp2, d2, shift=0.0, window=None, centres=None):
             return []
         ok = fin & ((best < RATIO * second) | (~np.isfinite(second) & (best < np.median(best[fin]))))
         return [cv2.DMatch(int(i), int(j[i]), float(best[i])) for i in np.flatnonzero(ok)]
+    # Python fallback (no compiled _guided_match): the same search as the C++ - rectangular window of +-wx columns (wrap-around) and
+    # +-wy rows, all candidates in it, best and second-best distance.  Before 9/10 it ignored `window` (the wider window when turning
+    # fast) and kept only the GUIDED_K nearest pixels of an elliptical window, so a checkout without the .so ran a different method.
     from scipy.spatial import cKDTree
-    sy = _px(GUIDED_WINDOW) / (GUIDED_ROWS * UP)                  # anisotropic window as a circle of radius GUIDED_WINDOW
+    wx, wy = float(window or _px(GUIDED_WINDOW)), float(GUIDED_ROWS * UP)
     bb = np.concatenate([b, b + [W, 0], b - [W, 0]]); src = np.tile(np.arange(len(b)), 3)
-    tree = cKDTree(bb * [1.0, sy])
-    dist, idx = tree.query(a * [1.0, sy], k=min(GUIDED_K, len(bb)), distance_upper_bound=_px(GUIDED_WINDOW))
-    dist, idx = np.atleast_2d(dist), np.atleast_2d(idx)
-    valid = np.isfinite(dist)
-    cand = np.where(valid, src[np.minimum(idx, len(bb) - 1)], 0)
+    tree = cKDTree(bb * [1.0, wx / wy])                            # rows scaled so the rectangle is a Chebyshev ball of radius wx
+    lists = tree.query_ball_point(a * [1.0, wx / wy], r=wx * (1 + 1e-6), p=np.inf)
+    qi = np.repeat(np.arange(len(a)), [len(l) for l in lists])
+    cj = src[np.concatenate([np.asarray(l, int) for l in lists])] if len(qi) else np.zeros(0, int)
+    if len(qi):
+        qi, cj = np.unique(np.stack([qi, cj], 1), axis=0).T         # a keypoint reached through two copies counts once
     if d1.dtype == np.uint8:                                      # ORB: Hamming
-        dd = np.unpackbits(d1[:, None, :] ^ d2[cand], axis=2).sum(axis=2).astype(np.float32)
+        dist = np.unpackbits(d1[qi] ^ d2[cj], axis=1).sum(axis=1).astype(np.float32)
     else:
-        dd = np.linalg.norm(d1[:, None, :].astype(np.float32) - d2[cand].astype(np.float32), axis=2)
-    dd[~valid] = np.inf
-    order = np.argsort(dd, axis=1)
-    best, second = np.take_along_axis(dd, order[:, :1], 1)[:, 0], np.take_along_axis(dd, order[:, 1:2], 1)[:, 0] if dd.shape[1] > 1 else np.full(len(dd), np.inf)
-    j = cand[np.arange(len(cand)), order[:, 0]]
+        dist = np.linalg.norm(d1[qi].astype(np.float32) - d2[cj].astype(np.float32), axis=1)
+    best = np.full(len(a), np.inf, np.float32); second = np.full(len(a), np.inf, np.float32); j = np.full(len(a), -1)
+    order = np.lexsort((dist, qi)); qi, cj, dist = qi[order], cj[order], dist[order]
+    first = np.r_[True, qi[1:] != qi[:-1]] if len(qi) else np.zeros(0, bool)
+    best[qi[first]] = dist[first]; j[qi[first]] = cj[first]
+    nxt = np.flatnonzero(first) + 1
+    nxt = nxt[(nxt < len(qi))]
+    nxt = nxt[qi[nxt] == qi[nxt - 1]]
+    second[qi[nxt]] = dist[nxt]
     fin = np.isfinite(best)
     ok = fin & ((best < RATIO * second) | (~np.isfinite(second) & (best < np.median(best[fin]) if fin.any() else False)))
     return [cv2.DMatch(int(i), int(j[i]), float(best[i])) for i in np.flatnonzero(ok)]
