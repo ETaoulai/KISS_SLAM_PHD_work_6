@@ -174,7 +174,10 @@ experiment» — όχι συστηματικό· τυχαίος περίπατο
 ## 9/10 (απόγευμα): πίνακες του paper — ΑΠΟΦΑΣΕΙΣ Μ.Τ. (#248)
 
 - **Σύνολο:** και οι 84 ακολουθίες (`docs/datasets.md`)· stairs / dynamic_spinning χωριστά ως ειδικές. **Σπόροι:** s0–s3 (`results_table.py --seeds`, προεπιλογή). **Κατάρρευση = αποτυχία** (✗ crash). **Μετρικές:** APE (επίσημο πρωτόκολλο) + RTE όπου το GT είναι πυκνό με προσανατολισμό· RPE 1 m μόνο στις φορητές· στα οχήματα RTE (επίσημη μετρική του Boreas) + APE.
-- **Σε εξέλιξη:** `scripts/paper_tables.py` — όλοι οι πίνακες από τα runs με ένα σενάριο, έλεγχος έναντι του `results.md`.
+- ~~`scripts/paper_tables.py`~~ **έγινε (#248):** όλοι οι πίνακες των 84 από τα runs (`kiss_runs/paper_248/`)· σχήματα `scripts/paper_figures.py` → `docs/figures/paper/` (τροχιές, ανά dataset έναντι KISS-SLAM).
+- **Σε εξέλιξη (9/10 βράδυ, ΑΠΟΦΑΣΗ Μ.Τ.: πλήρες ablation + upright ORB 7 × 2):** μονάδες systemd `kiss-q248uorb` (14 runs, `uorb248`) → `kiss-q248abl` (4476 runs: 13 παραλλαγές × 4 σπόροι × 84 + χωρίς deskew + Γ s1–s3 στις 8 Boreas· πρώτα ο σπόρος 0 όλων)·
+  launchers `kiss_runs/q248/` (`common.sh` = ΝΕΟ αντίγραφο / env, `KISS_NO_PLYS=1`, παράλειψη έτοιμων, φρένο < 20 GB στον SSD), τέλος `kiss_runs/q248uorb_FINISHED`, `q248abl_FINISHED`. Βαθμολόγηση: `scripts/ablation_table_248.py` (πίνακας + `docs/figures/paper/ablation.pdf`).
+  **Μετά από επανεκκίνηση:** `systemctl --user is-active kiss-q248uorb kiss-q248abl` — αν όχι ενεργές χωρίς FINISHED: `systemd-run --user --unit=kiss-q248abl --collect -p MemoryMax=50G -p OOMPolicy=continue bash -c 'bash ~/kiss_runs/q248/run_abl.sh >> ~/kiss_runs/q248/run_abl.log 2>&1'` (ίδια για uorb)· ο δίσκος NTFS πρέπει να είναι προσαρτημένος (ro).
 - **Εκκρεμούν:** επικύρωση Λ.Γ. (όλα ⏳ από 23/9, και το πλαίσιο «μεγάλη βελτίωση του KISS-SLAM, όχι νέα κορυφή»)· χρόνος σε laptop· upright ORB 4 σπόροι (#231, χρειάζεται runs)· σχήματα· τελικός πίνακας ablation.
 - **Κλειστά 9/10:** έλεγχος κώδικα (#242), αποτελεσμάτων / αξιολόγησης (#243), διορθώσεις αξιολόγησης (#245 / #246), GenZ στους διαδρόμους (#244), υβριδική αρχή — όχι (#247).
 
