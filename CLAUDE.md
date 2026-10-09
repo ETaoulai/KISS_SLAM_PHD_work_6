@@ -51,7 +51,9 @@ log, και τέλος ο πίνακας στην αντίστοιχη ενότ�
   source `/home/photogrammetrylinux/kiss-slam-for-edit`.
 - **macOS arm64**, conda env `kissslam`. ⚠️ Απαιτεί `scikit-build-core<1.0` και numpy
   χτισμένο με OpenBLAS (όχι Accelerate).
-- **Linux 2** (`photogrammetry`), conda env `kiss-slam-main`, source `/home/photogrammetry/Kiss_SLAM-main`
+- **Linux 2** (`photogrammetry`), **από 9/10: conda env `kiss-slam-main-new`, source `/home/photogrammetry/KISS_SLAM_main_new`** (τρέχον αντίγραφο εργασίας, κλάδος `matching_intensities`).
+  Πλήρως χωριστό από το παλιό: το `/home/photogrammetry/Kiss_SLAM-main` μένει με τα `kiss-slam-main` / `kiss-slam-gil` (παλιός κώδικας, ανέγγιχτα)· το `kiss-slam-main-new` είναι κλώνος του `kiss-slam-main`
+  με το `kiss_slam` εγκατεστημένο (editable) από το νέο αντίγραφο. Κάθε run της νέας δουλειάς: `~/miniconda3/envs/kiss-slam-main-new/bin/python` (ή `conda activate kiss-slam-main-new`).
   (git → GitHub **`ETaoulai/KISS_SLAM_PHD_work_6`**, private, remote `origin`, **από 9/10** (απόφαση Μ.Τ.): `main` = `a3de225` (καθαρισμός docs 9/10), κλάδος `matching_intensities`.
   Το `KISS_SLAM_PHD_work_4` (κύριο 2/10–9/10) = remote `archive4`· οι παλιοί τοπικοί κλάδοι (`after_091`, `image_rules`, `mulran_car`, `ral_method`, `speed_test`, `b9_*`, `deskew_in_icp`) παρακολουθούν ακόμα `origin/*` χωρίς αντίστοιχο στο work_6 — τα αντίγραφά τους στο `archive4/*`.
   Πριν: work_4 από 2/10: `main` = όλη η δουλειά ως το #091 (`70a5947`, ο κλάδος `rotation_bearing`).

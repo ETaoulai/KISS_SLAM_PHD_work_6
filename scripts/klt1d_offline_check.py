@@ -1,6 +1,6 @@
 """#230 offline check: image rotation magnitude vs GT for a detector / upscaling on 150 scans (200-349): klt1d_offline_check.py <seq> surf|klt1d <up>"""
-import sys, time, numpy as np
-sys.path.insert(0, "/home/photogrammetry/Kiss_SLAM-main/scripts"); sys.path.insert(0, "/home/photogrammetry/Kiss_SLAM-main")
+import os, sys, time, numpy as np
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import analyse_panorama_rows as a
 import kiss_slam.intensity_deskew as d
 from scipy.spatial.transform import Rotation, Slerp

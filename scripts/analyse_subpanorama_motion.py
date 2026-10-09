@@ -1,7 +1,7 @@
 """#232 offline: do 180-deg sub-panoramas (stride 90) measure intra-sweep motion changes?  analyse_subpanorama_motion.py <seq> <detector> <up>
 at the window's mean time; compare with GT over the same interval and with the full-scan fit (car model) over that interval."""
-import sys, numpy as np
-sys.path.insert(0, "/home/photogrammetry/Kiss_SLAM-main/scripts"); sys.path.insert(0, "/home/photogrammetry/Kiss_SLAM-main")
+import os, sys, numpy as np
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import analyse_panorama_rows as a
 import kiss_slam.intensity_deskew as d
 from scipy.spatial.transform import Rotation, Slerp

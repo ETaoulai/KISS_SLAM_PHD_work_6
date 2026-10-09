@@ -1,7 +1,7 @@
-import sys, csv, numpy as np
+import os, sys, csv, numpy as np
 from pathlib import Path
 from scipy.spatial.transform import Rotation as R
-sys.argv = ["x"]; sys.path.insert(0, "/home/photogrammetry/Kiss_SLAM-main/scripts")
+sys.argv = ["x"]; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import results_table as T
 from evaluate_ncd import best_offset
 from evaluate_gt import find_tum, load_tum, interpolate

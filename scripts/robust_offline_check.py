@@ -1,6 +1,6 @@
 """#234 / #235 offline: image rotation vs GT; env ROBUST=ransac or magsac. Usage: robust_offline_check.py <seq> <det> <up> [model]"""
-import sys, time, numpy as np
-sys.path.insert(0, "/home/photogrammetry/Kiss_SLAM-main/scripts"); sys.path.insert(0, "/home/photogrammetry/Kiss_SLAM-main")
+import os, sys, time, numpy as np
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import analyse_panorama_rows as a
 import kiss_slam.intensity_deskew as d
 from scipy.spatial.transform import Rotation, Slerp

@@ -1,9 +1,9 @@
 """#058 analysis: two starts on 16 sequences, range variants, and the two-start decisions against the ground truth."""
-import sys, csv, glob, re
+import os, sys, csv, glob, re
 import numpy as np
 from pathlib import Path
 from scipy.spatial.transform import Rotation as R
-sys.argv = ["x"]; sys.path.insert(0, "/home/photogrammetry/Kiss_SLAM-main/scripts")
+sys.argv = ["x"]; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import results_table as T
 from evaluate_ncd import evaluate, best_offset
 from evaluate_gt import find_tum, load_tum, interpolate
