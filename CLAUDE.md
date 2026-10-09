@@ -52,7 +52,9 @@ log, και τέλος ο πίνακας στην αντίστοιχη ενότ�
 - **macOS arm64**, conda env `kissslam`. ⚠️ Απαιτεί `scikit-build-core<1.0` και numpy
   χτισμένο με OpenBLAS (όχι Accelerate).
 - **Linux 2** (`photogrammetry`), conda env `kiss-slam-main`, source `/home/photogrammetry/Kiss_SLAM-main`
-  (git → GitHub **`ETaoulai/KISS_SLAM_PHD_work_4`**, private, remote `origin`, από 2/10: `main` = όλη η δουλειά ως το #091 (`70a5947`, ο κλάδος `rotation_bearing`).
+  (git → GitHub **`ETaoulai/KISS_SLAM_PHD_work_6`**, private, remote `origin`, **από 9/10** (απόφαση Μ.Τ.): `main` = `a3de225` (καθαρισμός docs 9/10), κλάδος `matching_intensities`.
+  Το `KISS_SLAM_PHD_work_4` (κύριο 2/10–9/10) = remote `archive4`· οι παλιοί τοπικοί κλάδοι (`after_091`, `image_rules`, `mulran_car`, `ral_method`, `speed_test`, `b9_*`, `deskew_in_icp`) παρακολουθούν ακόμα `origin/*` χωρίς αντίστοιχο στο work_6 — τα αντίγραφά τους στο `archive4/*`.
+  Πριν: work_4 από 2/10: `main` = όλη η δουλειά ως το #091 (`70a5947`, ο κλάδος `rotation_bearing`).
   Τα παλιά: `KISS_SLAM_PHD_work_3` = remote `archive3` (κλάδοι `main` ως το #080, `after_080`, `rotation_bearing`)· `KISS_SLAM_PHD_work_2` = remote `archive2` (κλάδοι `after_two_start`, `vertical_drift`, `intensity_norm`, `vertical_constraint`, `fast_fallback`)·
   `KISS_SLAM_PHD_work` = remote `archive` (κλάδοι `main` … `gating`, σταματά στο `fa86f3b`).)
   **Ο `main` δεν αλλάζει απευθείας (απόφαση Μ.Τ. 26/9):** κάθε νέα δουλειά σε δικό της κλάδο από τον `origin/main` — τρέχων `after_091` (2/10· docs και επιλογές της μεθόδου).
