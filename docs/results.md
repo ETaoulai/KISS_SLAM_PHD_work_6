@@ -195,12 +195,14 @@ Seeds: ours = s0–s3 everywhere (christ-church-02 also has s4–s7 of `base092`
 *mean rank among the 8 LiDAR-only arms run on all 1 sequences: KISS-SLAM, KISS no deskew, Ours #081 (paper so far), Ours default, + blend (B), + blend + fallback (A), + blend + sectors, + blend + fallback after 4 (C)
 
 
-### RPE 1 m (NCD + Oxford Spires + Boreas, translation cm / rotation °), median over sequences
+### RPE 1 m (NCD + Oxford Spires, translation cm / rotation °), median over sequences
+
+Hand-held only since 9/10 (#245): RPE 1 m is not comparable on the car (#243) — Boreas left out (with it: 17 sequences, C 6.19 cm / 0.876°, KISS-SLAM 21.33 / 2.727).
 
 | arm | sequences | median RPE t | median RPE r | median RPE t / KISS | median RPE r / KISS |
 |---|---|---|---|---|---|
-| KISS-SLAM | 17 | 21.33 | 2.727 | 1.00 | 1.00 |
-| KISS no deskew | 17 | 10.06 | 0.972 | 0.47 | 0.34 |
+| KISS-SLAM | 16 | 21.41 | 2.805 | 1.00 | 1.00 |
+| KISS no deskew | 16 | 10.32 | 0.979 | 0.46 | 0.34 |
 | GenZ-ICP | 16 | 7.91 | 0.651 | 0.35 | 0.22 |
 | MAD-ICP | 15 | 5.19 | 0.654 | 0.24 | 0.20 |
 | DLO | 15 | 6.55 | 0.615 | 0.29 | 0.21 |
@@ -208,12 +210,12 @@ Seeds: ours = s0–s3 everywhere (christ-church-02 also has s4–s7 of `base092`
 | Traj-LO | 14 | 2.36 | 0.381 | 0.11 | 0.13 |
 | FAST-LIO2 (IMU) | 15 | 2.12 | 0.377 | 0.14 | 0.14 |
 | COIN-LIO (IMU) | 8 | 2.54 | 0.430 | 0.17 | 0.14 |
-| Ours #081 (paper so far) | 17 | 6.43 | 1.022 | 0.39 | 0.37 |
-| Ours default | 17 | 6.24 | 0.923 | 0.36 | 0.36 |
-| + blend (B) | 17 | 6.19 | 0.876 | 0.35 | 0.36 |
-| + blend + fallback (A) | 17 | 6.19 | 0.878 | 0.35 | 0.36 |
-| + blend + sectors | 17 | 6.23 | 0.850 | 0.35 | 0.36 |
-| + blend + fallback after 4 (C) | 17 | 6.19 | 0.876 | 0.35 | 0.36 |
+| Ours #081 (paper so far) | 16 | 7.25 | 1.053 | 0.36 | 0.36 |
+| Ours default | 16 | 7.01 | 0.982 | 0.34 | 0.35 |
+| + blend (B) | 16 | 6.86 | 0.954 | 0.34 | 0.35 |
+| + blend + fallback (A) | 16 | 6.87 | 0.955 | 0.34 | 0.35 |
+| + blend + sectors | 16 | 6.82 | 0.931 | 0.33 | 0.35 |
+| + blend + fallback after 4 (C) | 16 | 6.86 | 0.954 | 0.34 | 0.35 |
 
 **Summary (⏳, #162 / #164):** method C never fails where KISS-SLAM does (except spms, the drone at altitude where every arm fails) and roughly halves KISS-SLAM's
 error (NCD ×0.41, Spires ×0.16, Hilti ×0.24, NTU eee ×0.38, NTU new ×0.32, Boreas ×0.73, geometric mean of APE / KISS). Against other LiDAR-only methods:
@@ -460,8 +462,11 @@ Boreas, first 3000 scans of 2021-01-26-11-22 (§1): KISS-SLAM 0.266, C 0.195 m. 
 all methods (#218 / #219 / #221: odometry z ×0.49 and RTE ×0.70 with `--elev-offset=0.1`, not used for the paper).
 
 **Summary (⏳):** odometry better than KISS-SLAM on 8 / 8 drives (RTE 0.40 / 0.45 %) and better than MAD-ICP / GenZ-ICP; **CT-ICP drifts less** (0.37 %, 8 / 8)
-but has a constant ~25 m APE (open); best odometry APE of all. After loop closures KISS-SLAM keeps the best APE (5.96 vs 6.13 m car config). RPE of methods
-without deskew is not comparable (pose-time convention, #085 / #220).
+but has a constant ~25 m APE — its own slow yaw drift on straight road (4.4° by the end, C 2.9°; same pose-time convention as ours, scale 0.9995; RTE over
+100–800 m does not see it; #243); best odometry APE of all. After loop closures KISS-SLAM keeps the best APE (5.96 vs 6.13 m car config). **RPE 1 m is not
+used on the cars** (#243): at 10 Hz a car moves ~1 m per scan, so the 1 m ± 10 % pairs exist only at some speeds and span stops, and the GT shifted by 20 ms alone
+gives 2.1 cm — as much as the methods; the official Boreas odometry metric is the KITTI RTE above. Our odometry does have more scan-to-scan jitter than CT-ICP / MAD-ICP
+(along-track on MulRan, vertical on Boreas; real, not a time convention, #243).
 
 ### 4.2 MulRan — 4 sequences (7/10, #208–#217, #223, #224, #227)
 

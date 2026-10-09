@@ -60,7 +60,8 @@ def main():
                     if year == "2021":
                         g = gt_2021(seq)
                         v = evaluate_hilti(g, r)
-                        vals.append(dict(rmse=v["rmse"], score=np.nan, compl=v["n_matched"] / v["n_ref"], dense=np.nan))
+                        vals.append(dict(rmse=v["rmse"], score=np.nan, dense=np.nan,   # #245: no completeness against a dense IMU reference (was 0.01-0.08)
+                                          compl=v["n_matched"] / v["n_ref"] if v.get("kind") != "imu.txt" else np.nan))
                     else:
                         g, gd = gt_2022(seq)
                         v = evaluate_hilti2022(g, r)

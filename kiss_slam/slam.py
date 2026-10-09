@@ -392,6 +392,7 @@ class KissSLAM:
         # pipeline turns this into the pose's time for the evaluation (pose_times.csv, *_posetime_tum.txt).
         self.pose_time_fractions = []
         self.sweep_spans = []               # last - first point time of each scan, in the reader's own unit
+        self.sweep_starts = []              # first point time of each scan, the reader's unit (9/10, #245: pose time from it, not the stamp)
         self._kept_deskew_delta = None      # deskew motion of the result kept by _register_frame_image_motion
         self._image_motions = None         # precomputed (N,4,4), NaN where failed
         self.image_motion_log = []         # (scan, motion or NaN, inliers) per scan, written by the pipeline (#086)
@@ -1036,6 +1037,7 @@ class KissSLAM:
         t = np.asarray(timestamps, dtype=np.float64).ravel()
         self.pose_time_fractions.append(self._pose_time_fraction(frame, t, deskew_delta))
         self.sweep_spans.append(float(t.max() - t.min()) if len(t) else np.nan)
+        self.sweep_starts.append(float(t.min()) if len(t) else np.nan)
 
     def _pose_time_fraction(self, frame, timestamps, deskew_delta):
         """Instant of the sweep the registered pose stands for (0 = first point, 1 = last point).

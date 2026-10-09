@@ -190,7 +190,7 @@ if OFFICIAL:
                ("rpe1s_t", "RPE 1 s [cm]", "{:.2f}"), ("rpe1s_r", "RPE 1 s [°]", "{:.3f}"), ("rte", "RTE [%]", "{:.2f}"),
                ("rre", "RRE [°/100 m]", "{:.3f}"), ("path", "path [m]", "{:.1f}"),
                ("excess", "path vs GT [%]", "{:+.1f}"), ("z_rmse", "z RMSE [m]", "{:.3f}"), ("fail", "image fails", "{:.0f}"),
-               ("matched", "assoc.", "{:.2f}"), ("pose_minus_stamp", "pose − stamp [s]", "{:+.4f}"), ("gt_interp", "GT interp.", "{:.0f}")]
+               ("matched", "assoc.", "{:.2f}"), ("cover", "GT covered", "{:.2f}"), ("pose_minus_stamp", "pose − stamp [s]", "{:+.4f}"), ("gt_interp", "GT interp.", "{:.0f}")]
 
 
 CACHE_VERSION = 1      # bump when evaluate_ncd.evaluate changes what it computes
@@ -226,7 +226,7 @@ def cached_evaluate(gt, frame, gt_t, gt_T, run):
         m = re.search(r"image motion: \d+/\d+ scans \((\d+) fell back", log.read_text(errors="replace")) if log.exists() else None
         v["fail"] = float(m[1]) if m else float("nan")
         v = {k: float(v.get(k, float("nan"))) for k in
-             ("ate", "rpe_t", "rpe_r", "rpe1s_t", "rpe1s_r", "rte", "rre", "path", "gt_path", "z_rmse", "fail", "matched", "pose_minus_stamp", "gt_interp")}
+             ("ate", "rpe_t", "rpe_r", "rpe1s_t", "rpe1s_r", "rte", "rre", "path", "gt_path", "z_rmse", "fail", "matched", "cover", "pose_minus_stamp", "gt_interp")}
     elif OFFICIAL:
         v = evaluate_official(gt_t, gt_T, run, frame, EXTRA / "official_eval" / run.parent.name)
         m = re.search(r"image motion: \d+/\d+ scans \((\d+) fell back", log.read_text(errors="replace")) if log.exists() else None
@@ -316,7 +316,7 @@ def main():
     for key in dict.fromkeys((r["dataset"], r["sequence"]) for r in rows):
         grp = [r for r in rows if (r["dataset"], r["sequence"]) == key]
         best = {c: min((r for r in grp if not np.isnan(r[c])), key=lambda r: abs(r[c]) if c == "excess" else r[c], default=None)
-                for c, _, _ in METRICS if c not in ("path", "fail", "offset", "pose_minus_stamp", "gt_interp", "matched")}
+                for c, _, _ in METRICS if c not in ("path", "fail", "offset", "pose_minus_stamp", "gt_interp", "matched", "cover")}
         for i, r in enumerate(grp):
             cells = []
             for c, _, f in METRICS:

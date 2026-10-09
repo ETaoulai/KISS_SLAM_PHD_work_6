@@ -502,6 +502,11 @@ class SlamPipeline(OdometryPipeline):
         instant of its stamp), so the official evaluation (evo_ape, no time offset) compares like with like.  The
         span comes in the reader's unit (Hesai s, Ouster bag ns, 2020 pcd s): converted by the power of ten that
         brings it closest to the gap between stamps.
+
+        #245 (9/10): the fraction is of [first, last] point time, so the pose time starts from the FIRST POINT, not from the stamp.
+        They are the same on the bags / pcds above and on Boreas (measured 9/10), but MulRan's file stamp is 8.5 ms before its first
+        point with a return (the first columns are empty), so the poses were stamped 8.5 ms early.  Absolute point times (the raw
+        readers, seconds): start = the first point time; times relative to the stamp: start = stamp + first time; else the stamp.
         """
         fractions = np.asarray(self.kiss_slam.pose_time_fractions, dtype=np.float64)
         spans = np.asarray(self.kiss_slam.sweep_spans, dtype=np.float64)
@@ -512,12 +517,19 @@ class SlamPipeline(OdometryPipeline):
             return
         unit = 10.0 ** np.round(np.log10(np.median(np.diff(stamps)) / np.nanmedian(spans)))
         spans = np.where(np.isfinite(spans), spans * unit, np.nanmedian(spans) * unit)
-        pose_time = stamps + fractions * spans
+        starts = np.asarray(getattr(self.kiss_slam, "sweep_starts", []), dtype=np.float64)[:n] * unit
+        if len(starts) == n and np.nanmedian(np.abs(starts - stamps)) < 1.0:            # absolute point times
+            first = np.where(np.isfinite(starts), starts, stamps)
+        elif len(starts) == n and 0.0 <= np.nanmedian(starts) < 1.0:                       # relative to the stamp
+            first = stamps + np.where(np.isfinite(starts), starts, 0.0)
+        else:
+            first = stamps
+        pose_time = first + fractions * spans
         with open(os.path.join(self.results_dir, "pose_times.csv"), "w", newline="") as f:
             w = csv.writer(f)
-            w.writerow(["scan", "stamp", "fraction", "span_s", "pose_time"])
-            for k, (t, a, d, p) in enumerate(zip(stamps, fractions, spans, pose_time)):
-                w.writerow([k, f"{t:.6f}", f"{a:.4f}", f"{d:.6f}", f"{p:.6f}"])
+            w.writerow(["scan", "stamp", "first_point", "fraction", "span_s", "pose_time"])
+            for k, (t, t0, a, d, p) in enumerate(zip(stamps, first, fractions, spans, pose_time)):
+                w.writerow([k, f"{t:.6f}", f"{t0:.6f}", f"{a:.4f}", f"{d:.6f}", f"{p:.6f}"])
         poses = self._calibrate_poses(self.poses)
         rows = [np.r_[t, T[:3, 3], Rotation.from_matrix(T[:3, :3]).as_quat()] for t, T in zip(pose_time, poses)]
         np.savetxt(f"{self.results_dir}/{self.dataset_sequence}_poses_posetime_tum.txt", np.array(rows), fmt="%.6f")

@@ -163,7 +163,13 @@ def evaluate_official(gt_t, gt_T, run, frame, out_dir=None, verbose=False):
     ape = metrics.APE(tr)
     ape.process_data((ref_a, est_al))
     z = est_al.positions_xyz[:, 2] - ref_a.positions_xyz[:, 2]
+    # #245 (9/10): how much of the GT time span the run covers - "assoc." is relative to the run's own poses inside the GT span, so a run
+    # that stopped early was scored on its overlap only, with nothing flagging it.  Not part of the protocol; a report column and a warning.
+    cover = max(0.0, min(t[-1], gt_t[-1]) - max(t[0], gt_t[0])) / max(gt_t[-1] - gt_t[0], 1e-9)
+    if cover < 0.95:
+        print(f"  WARNING {run}: covers {100 * cover:.1f} % of the GT time span - scored on the overlap only", file=sys.stderr)
     return dict(
+        cover=float(cover),
         n=est_a.num_poses, matched=est_a.num_poses / max(inside.sum(), 1), gt_interp=float(gt_interp),
         exact_times=float(source == "exact"),
         ate=float(ape.get_statistic(metrics.StatisticsType.rmse)),
@@ -178,7 +184,7 @@ def evaluate_official(gt_t, gt_T, run, frame, out_dir=None, verbose=False):
 COLS = [("ate", "APE [m]", "{:.3f}"), ("rpe_t", "RPE 1 m [cm]", "{:.2f}"), ("rpe_r", "RPE 1 m [deg]", "{:.3f}"),
         ("rpe1s_t", "RPE 1 s [cm]", "{:.2f}"), ("rpe1s_r", "RPE 1 s [deg]", "{:.3f}"), ("rte", "RTE [%]", "{:.2f}"),
         ("rre", "RRE [deg/100m]", "{:.3f}"), ("path", "path [m]", "{:.1f}"),
-        ("z_rmse", "z RMSE [m]", "{:.3f}"), ("matched", "assoc.", "{:.3f}"), ("gt_interp", "GT interp", "{:.0f}"),
+        ("z_rmse", "z RMSE [m]", "{:.3f}"), ("matched", "assoc.", "{:.3f}"), ("cover", "GT covered", "{:.3f}"), ("gt_interp", "GT interp", "{:.0f}"),
         ("pose_minus_stamp", "pose-stamp [s]", "{:+.4f}")]
 
 

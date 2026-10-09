@@ -128,9 +128,9 @@ def main():
             summ[(g, n)] = (md, gm, wins[n], fails, mr, len(have))
             L.append(f"| {n} | {len(have)} | {md:.2f} | {gm:.2f} | {wins[n] if n in lidar_only else '–'} | {fails} | {mr} |")
         L += ["", f"*mean rank among the {len(full)} LiDAR-only arms run on all {len(gs)} sequences: {', '.join(full)}", ""]
-    L += ["## RPE 1 m (NCD + Oxford Spires + Boreas, translation cm / rotation °), median over sequences", "",
+    L += ["## RPE 1 m (NCD + Oxford Spires, translation cm / rotation °), median over sequences", "",
           "| arm | sequences | median RPE t | median RPE r | median RPE t / KISS | median RPE r / KISS |", "|---|---|---|---|---|---|"]
-    rseq = GROUPS["NCD"] + GROUPS["Oxford Spires"] + ["Boreas"]
+    rseq = GROUPS["NCD"] + GROUPS["Oxford Spires"]          # #245: hand-held only - RPE 1 m is not comparable on the car (#243), RTE there
     for n in names:
         have = [s for s in rseq if n in rpe.get(s, {}) and "KISS-SLAM" in rpe[s]]
         if not have:
