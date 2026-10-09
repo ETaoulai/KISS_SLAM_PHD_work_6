@@ -93,12 +93,12 @@ with the challenge's official protocols (#238-#240).
 
 ## Hilti (for the results section; #239 / #240, official protocols)
 
-Hilti 2022 (hand-held Hesai XT-32, construction sites, stairs, corridors, cupolas): KISS-SLAM drifts 1-124 m; C reduces the error 2-12x and is better on 15 of 16
-(geometric mean x0.37). Against the other LiDAR-only methods (authors' configurations, one run each) C has the lowest geometric-mean APE on the 13 sequences all methods
-complete (1.90 m; MAD-ICP 1.93, GenZ-ICP 2.36, KISS-SLAM 4.9, CT-ICP 7.75) and the best mean rank (tied with MAD-ICP), and it is the only one that never collapses;
+Hilti 2022 (hand-held Hesai XT-32, construction sites, stairs, corridors, cupolas): KISS-SLAM's APE ranges from 0.035 to 124 m; C is better on 15 of 16
+(geometric mean x0.37; x0.08-0.30 on 7 of 16, x0.83-0.97 on exp01 / 04 / 18, worse on exp05: 0.80 vs 0.70 m). Against the other LiDAR-only methods (authors' configurations, one run each) C has the lowest geometric-mean APE on the 13 sequences all methods
+complete (1.90 m; MAD-ICP 1.93, GenZ-ICP 2.36, KISS-SLAM 4.9, CT-ICP 7.75) and the second-best mean rank on them (MAD-ICP 2.31, C 2.46; tied at 2.3 if every method is ranked on all the sequences it completed), and it is the only one that never collapses;
 MAD-ICP and GenZ-ICP win more single sequences (GenZ-ICP 5 cm on the corridors exp07 / exp14) but fail elsewhere (MAD-ICP 19.7 m on exp01 and a crash on exp23, GenZ-ICP
 2.7 km on exp09 and two out-of-memory runs); Traj-LO diverges with its authors' Hesai configuration. All LiDAR-only methods stay at metres - the challenge score
-(points below 10 cm) is ~0 except exp01. Hilti 2021 (Ouster, all 12, #241): every recent LiDAR-only method reaches 2-8 cm where the geometry suffices; geometric-mean APE GenZ-ICP 0.102 m, C 0.136,
+(points below 10 cm) is 0 almost everywhere (exp01: C 52, Traj-LO 51.5, KISS-SLAM 41.5; GenZ-ICP 26.7 / 32.5 on exp07 / exp14; C 10.0 on exp05). Hilti 2021 (Ouster, all 12, #241): every recent LiDAR-only method reaches 2-8 cm where the geometry suffices; geometric-mean APE GenZ-ICP 0.102 m, C 0.136,
 CT-ICP 0.145, MAD-ICP 0.248, Traj-LO 0.261 (best on 7 / 12 but one divergence), KISS-SLAM 0.381 - C closes KISS-SLAM's failures (IC_Office_1 6.3 -> 0.07 m) but is not the most accurate there.
 
 ## Limits (to state in the paper)

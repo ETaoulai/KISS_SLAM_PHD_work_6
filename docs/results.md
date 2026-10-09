@@ -30,7 +30,9 @@ Single-run ATE differences < 0.02–0.04 m are not measurable (#037).
 ## 1. Main table — 42 sequences (1/10–5/10, #081–#083, #141, #150–#164)
 
 APE / ATE m, official protocols; ours 4 seeds. Columns "Ours #081 … + blend + fallback after 4 (C)" = the method's development (C = locked method).
-IMU methods (FAST-LIO2, COIN-LIO) are reference only. **Bold** = best LiDAR-only. Note: for the 6 Hilti 2021 sequences here, §3 has the same arms re-run (#241).
+IMU methods (FAST-LIO2, COIN-LIO) are reference only. **Bold** = best LiDAR-only. ‡ = corrected 9/10 (#243): these cells were means of 3 seeds — the old completion test
+dropped seed 0, whose log has no `wall` line though the run is complete; now 4 seeds (eee_02 B 0.790 → 0.805, dynamic_spinning C 0.114 → 0.111; NTU (eee) summary of B / A re-ranked).
+Seeds: ours = s0–s3 everywhere (christ-church-02 also has s4–s7 of `base092` / `bd137` on the SSD — with all 8 the cells would be 0.179 / 0.246; `results_table.py` today takes all seeds). Note: for the 6 Hilti 2021 sequences here, §3 has the same arms re-run (#241).
 
 | sequence | KISS-SLAM | KISS no deskew | GenZ-ICP | MAD-ICP | DLO | CT-ICP | Traj-LO | FAST-LIO2 (IMU) | COIN-LIO (IMU) | Ours #081 (paper so far) | Ours default | + blend (B) | + blend + fallback (A) | + blend + sectors | + blend + fallback after 4 (C) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -57,7 +59,7 @@ IMU methods (FAST-LIO2, COIN-LIO) are reference only. **Bold** = best LiDAR-only
 | Basement_1 | 0.055 | 0.078 | 0.069 | 0.106 | 0.083 | 0.066 | 0.040 | 0.030 | – | 0.050 | 0.053 | 0.046 | 0.046 | **0.036** | 0.046 |
 | UZH_Tracking_Area_Run_2 | 0.585 | 0.204 | 0.198 | **0.188** | 0.196 | 0.498 | 0.270 | 0.188 | – | 0.551 | 0.576 | 0.576 | 0.576 | 0.571 | 0.576 |
 | eee_01 | 2.678 | 2.363 | 1.597 | 1.503 | 0.220 | 0.234 | **0.082** | 0.087 | – | 1.737 | 1.483 | 1.553 | 1.454 | 1.607 | 1.601 |
-| eee_02 | 1.486 | 1.490 | 0.222 | 1.271 | 0.149 | 0.096 | **0.075** | 0.072 | – | 0.679 | 0.836 | 0.790 | 0.797 | 0.811 | 0.812 |
+| eee_02 | 1.486 | 1.490 | 0.222 | 1.271 | 0.149 | 0.096 | **0.075** | 0.072 | – | 0.679 | 0.836 | 0.805 ‡ | 0.797 | 0.811 | 0.812 |
 | eee_03 | 0.864 | 0.841 | 0.739 | 2.477 | 0.226 | 0.287 | **0.111** | 0.111 | – | 0.344 | 0.360 | 0.142 | 0.140 | 0.272 | 0.145 |
 | nya_01 | 0.736 | – | – | – | – | – | – | – | – | – | **0.355** | 0.359 | 0.360 | – | 0.359 |
 | nya_02 | 1.508 | – | – | – | – | – | – | – | – | – | **0.191** | 0.200 | 0.200 | – | 0.200 |
@@ -76,7 +78,7 @@ IMU methods (FAST-LIO2, COIN-LIO) are reference only. **Bold** = best LiDAR-only
 | spms_03 | 9.518 † | – | – | – | – | – | – | – | – | – | 26.3 † | 17.6 † | **0.410** | – | 0.818 |
 | Boreas | 0.266 | 7.126 † | – | – | – | – | – | – | – | 0.273 | 0.233 | **0.195** | 0.196 | 0.205 | **0.195** |
 | stairs (special) | 3.586 | 2.705 | 2.003 | **0.136** | 0.175 | 4.129 | 0.191 | 732.5 † | 0.218 | 2.074 | 1.923 | 1.643 | 1.643 | 2.257 | 1.643 |
-| dynamic_spinning (special) | 0.159 | 20.8 † | 15.6 † | 26.2 † | 4.450 | 10.8 † | **0.080** | 0.085 | – | 0.504 | 0.171 | 0.111 | 1.415 | 0.146 | 0.114 |
+| dynamic_spinning (special) | 0.159 | 20.8 † | 15.6 † | 26.2 † | 4.450 | 10.8 † | **0.080** | 0.085 | – | 0.504 | 0.171 | 0.111 | 1.415 | 0.146 | 0.111 ‡ |
 
 ### Per-dataset summaries (special sequences excluded)
 
@@ -158,8 +160,8 @@ IMU methods (FAST-LIO2, COIN-LIO) are reference only. **Bold** = best LiDAR-only
 | FAST-LIO2 (IMU) | 3 | 0.05 | 0.06 | – | 0 | – |
 | Ours #081 (paper so far) | 3 | 0.46 | 0.49 | 0 | 0 | 8.0 |
 | Ours default | 3 | 0.55 | 0.51 | 0 | 0 | 8.0 |
-| + blend (B) | 3 | 0.53 | 0.37 | 0 | 0 | 5.3 |
-| + blend + fallback (A) | 3 | 0.54 | 0.36 | 0 | 0 | 4.3 |
+| + blend (B) | 3 | 0.54 ‡ | 0.37 | 0 | 0 | 5.7 ‡ |
+| + blend + fallback (A) | 3 | 0.54 | 0.36 | 0 | 0 | 4.0 ‡ |
 | + blend + sectors | 3 | 0.55 | 0.47 | 0 | 0 | 8.0 |
 | + blend + fallback after 4 (C) | 3 | 0.55 | 0.38 | 0 | 0 | 7.3 |
 
@@ -235,7 +237,7 @@ Hesai QT64, hand-held; GT `gt-tum.txt` of the dataset (`docs/datasets.md`). Ours
 | christ-church-05 (816) | 1.721 · 0.85 · 24.0 · 1537 | **0.270 ± 0.025 · 0.27 ± 0.01 · 4.6** · 892 |
 | geometric mean C / KISS | | APE ×0.20 · RTE ×0.32 · RPE ×0.17 |
 
-**Summary (⏳):** confirms the first 6: KISS-SLAM loses the hand-held Hesai (path 1.6–3.3× the GT), C does not (+7–23 %, the known overestimate); only
+**Summary (⏳):** confirms the first 6: KISS-SLAM loses the hand-held Hesai (path 1.6–3.3× the GT), C does not (+7–34 %, the known overestimate; corrected 9/10, #243: blenheim-palace-01 +27 %, -05 +34 %); only
 observatory-quarter-02 is an APE tie. Oxford Spires total for the paper: 13 sequences.
 
 ---
@@ -422,14 +424,14 @@ exp23: the last control point is ~77 s after the published bags (completeness 0.
 | | geometric-mean APE (sequences all methods complete) | mean rank | best on |
 |---|---|---|---|
 | **2021** (12, #241) | GenZ-ICP **0.102** · C 0.136 · CT-ICP 0.145 · MAD-ICP 0.248 · Traj-LO 0.261 · KISS-SLAM 0.381 m | Traj-LO 2.2 · GenZ 2.4 · CT 3.2 · C 3.8 · MAD 4.3 · KISS 5.0 | Traj-LO 7, GenZ 3, CT 1, MAD 1 |
-| **2022** (13 common, #240) | **C 1.90** · MAD-ICP 1.93 · GenZ-ICP 2.36 · KISS-SLAM 4.9 · CT-ICP 7.75 · Traj-LO 174 m | **C 2.3 · MAD 2.3** · GenZ 2.9 · KISS 4.1 · CT 4.3 · Traj-LO 4.5 | MAD 6, GenZ 4, C 3, Traj-LO 2, KISS 1 |
+| **2022** (13 common, #240) | **C 1.90** · MAD-ICP 1.93 · GenZ-ICP 2.36 · KISS-SLAM 4.9 · CT-ICP 7.75 · Traj-LO 174 m | all 16, each sequence ranked among the methods that completed it: **C 2.3 · MAD 2.3** · GenZ 2.9 · KISS 4.1 · CT 4.3 · Traj-LO 4.5; on the 13 common (as the geo-mean): **MAD 2.31** · C 2.46 · GenZ 3.00 · KISS 4.15 · Traj-LO 4.46 · CT 4.62 (#243) | MAD 6, GenZ 4, C 3, Traj-LO 2, KISS 1 |
 
 C vs KISS-SLAM: 2022 APE ×0.37 (better on 15 / 16), 2021 ×0.36 (12) — closes every KISS-SLAM failure (IC_Office_1 6.34 → 0.07, Office_Mitte_1 4.29 → 0.25,
 Construction_Site_2 2.65 → 0.10 m).
 
 **Summary (⏳):** Hilti 2022 (hard hand-held motion, 32-beam Hesai, stairs / corridors / cupolas) is where LiDAR-only odometry generally fails: C has the lowest
-average error and is the only method without a collapse (worst 17 m on the 974 s exp23), but all methods stay at metres (challenge score ~0 except exp01:
-C 52 / KISS 41.5). MAD-ICP / GenZ-ICP win more single sequences and fail elsewhere; GenZ-ICP reaches 5 cm in the corridors exp07 / exp14 (open: why, must-do
+average error and is the only method without a collapse (worst 17 m on the 974 s exp23), but all methods stay at metres (challenge score 0 almost everywhere — exceptions: exp01 C 52 / Traj-LO 51.5 / KISS 41.5,
+GenZ-ICP 26.7 / 32.5 on the corridors exp07 / exp14, C 10.0 on exp05; corrected 9/10, #243). MAD-ICP / GenZ-ICP win more single sequences and fail elsewhere; GenZ-ICP reaches 5 cm in the corridors exp07 / exp14 (open: why, must-do
 M.T. 9/10). Hilti 2021 (gentle motion, good geometry): every recent method reaches 2–8 cm; GenZ-ICP / Traj-LO are the most accurate, C third.
 
 ---
@@ -487,7 +489,7 @@ RTE 0.40 % (KISS-SLAM 0.42, method of 29/9 0.65) — sanity check only.
 
 ## 5. Car configuration on hand-held / drone (7/10–8/10, #222, #226)
 
-| sequence | KISS-SLAM | C (4 seeds) | car config (s0) | C + blend start only (s0) | C + trigger only (s0) |
+| sequence | KISS-SLAM (christ-church-03 / quad_hard: `indoor_detail` — default KISS-SLAM 0.143 / 0.329 m, §1; #243) | C (4 seeds) | car config (s0) | C + blend start only (s0) | C + trigger only (s0) |
 |---|---|---|---|---|---|
 | christ-church-03 APE m · RTE % | 0.122 · 0.46 | 0.039 ± 0.001 · 0.13 | 0.038 · 0.13 | – | – |
 | quad_hard | 0.163 · 0.92 | 0.234 ± 0.029 · 0.91 ± 0.10 | 0.194 · 0.76 | – | – |
