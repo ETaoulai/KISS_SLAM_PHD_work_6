@@ -504,8 +504,9 @@ class SlamPipeline(OdometryPipeline):
         brings it closest to the gap between stamps.
 
         #245 (9/10): the fraction is of [first, last] point time, so the pose time starts from the FIRST POINT, not from the stamp.
-        They are the same on the bags / pcds above and on Boreas (measured 9/10), but MulRan's file stamp is 8.5 ms before its first
-        point with a return (the first columns are empty), so the poses were stamped 8.5 ms early.  Absolute point times (the raw
+        They are the same on the Hesai / Ouster bags (Spires, Hilti 2021 / 2022, NCD 2021, NTU) and on Boreas (measured 9/10, #245 / #246), but
+        where the reader drops points without a return the first point comes after the stamp: MulRan 8.5 ms, the Newer College 2020 pcds
+        1.9-3.0 ms (the "25/9" above was the sweep start, not the first point kept), so those poses were stamped that much early.  Absolute point times (the raw
         readers, seconds): start = the first point time; times relative to the stamp: start = stamp + first time; else the stamp.
         """
         fractions = np.asarray(self.kiss_slam.pose_time_fractions, dtype=np.float64)
