@@ -214,7 +214,8 @@ MulRan seed 0 (RTE %, SLAM); "car configuration" = blend as ICP start + translat
 |---|---|---|---|---|
 | 1D KLT flow along the rings, native panorama | `run_ncd.py klt1d --panorama-up=1` | church_03 / quad_hard / eee_03 | APE 0.064 / 0.416 / 0.805 vs C 0.039 / 0.234 / 0.145 (KISS 0.143 / 0.329 / 0.864) | out (ignores vertical shifts) |
 | 2D pyramidal KLT | `klt2d` | quad_hard | 0.253 m (C 0.234 ± 0.029) | ≈ C |
-| upright ORB | `uorb` | quad_hard | 0.174 m, RTE 0.75 % (1 seed) | open (4 seeds + more sequences) |
+| upright ORB | `uorb` | quad_hard | 0.174 m, RTE 0.75 % (1 seed) | sub-test #249 |
+| upright ORB, sub-test (#249, 9/10) | `uorb` (`uorb248`) | 7 sequences × 2 seeds | APE / C (same seeds) ×1.08 geo-mean, worse > 5 % on 4 / 7 (cloister +20 %, underground_hard +16 %, Boreas +11 %), never better; RPE rotation +12–49 % hand-held; fewer image failures on the 16-beam drone (1.3 / 6.2 %) | **rejected** — not run on all 84 |
 | sub-panoramas 180° / 90° overlap | offline | quad_hard | no better than the full fit (each match spans one period) | not run |
 | cubic motion model | `--model=cub` | church_03 | APE 0.044 vs 0.039 ± 0.0004, RPE 4.35 vs 3.93 cm | out |
 | MAGSAC++ / GNC-TLS / two-model fitting | `--robust=magsac|gnc|multi` | church_03, quad_hard (offline), Sejong01 | = RANSAC (Sejong RTE 8.36 / 8.32 / 8.15 vs 8.33 %); step 68 / 5.3 / 18 ms vs 3.8 ms | out |
