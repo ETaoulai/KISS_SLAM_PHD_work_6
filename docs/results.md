@@ -30,14 +30,14 @@ Single-run ATE differences < 0.02–0.04 m are not measurable (#037).
 ## 1. Main table — 42 sequences (1/10–5/10, #081–#083, #141, #150–#164)
 
 APE / ATE m, official protocols; ours 4 seeds. Columns "Ours #081 … + blend + fallback after 4 (C)" = the method's development (C = locked method).
-IMU methods (FAST-LIO2, COIN-LIO) are reference only. **Bold** = best LiDAR-only. ‡ = corrected 9/10 (#243): these cells were means of 3 seeds — the old completion test
+IMU methods (FAST-LIO2, COIN-LIO) are reference only. **Bold** = best LiDAR-only. ✗ crash = the run crashed (Traceback, no trajectory) — a failure (ΑΠΟΦΑΣΗ Μ.Τ. 9/10, #248), not «not run». ‡ = corrected 9/10 (#243): these cells were means of 3 seeds — the old completion test
 dropped seed 0, whose log has no `wall` line though the run is complete; now 4 seeds (eee_02 B 0.790 → 0.805, dynamic_spinning C 0.114 → 0.111; NTU (eee) summary of B / A re-ranked).
 Seeds: ours = s0–s3 everywhere (christ-church-02 also has s4–s7 of `base092` / `bd137` on the SSD — with all 8 the cells would be 0.179 / 0.246; `results_table.py` today takes all seeds). Note: for the 6 Hilti 2021 sequences here, §3 has the same arms re-run (#241).
 
 | sequence | KISS-SLAM | KISS no deskew | GenZ-ICP | MAD-ICP | DLO | CT-ICP | Traj-LO | FAST-LIO2 (IMU) | COIN-LIO (IMU) | Ours #081 (paper so far) | Ours default | + blend (B) | + blend + fallback (A) | + blend + sectors | + blend + fallback after 4 (C) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 01_short | 0.419 | 0.350 | 0.512 | 1.741 | – | 0.302 | – | – | – | 0.307 | 0.301 | 0.304 | 0.304 | **0.299** | 0.304 |
-| 02_long_experiment | 1.275 | 3.498 | 1.893 | – | **0.339** | 0.483 | – | 0.342 | – | 1.619 | 2.190 | 1.901 | 1.901 | 2.048 | 1.901 |
+| 02_long_experiment | 1.275 | 3.498 | 1.893 | – | **0.339** | 0.483 | ✗ crash | 0.342 | – | 1.619 | 2.190 | 1.901 | 1.901 | 2.048 | 1.901 |
 | quad_easy | 0.104 | 0.083 | 0.077 | 0.090 | 0.082 | 0.073 | **0.070** | 0.067 | 0.068 | 0.079 | 0.077 | 0.077 | 0.077 | 0.075 | 0.077 |
 | quad_hard | 0.329 | 0.209 | 0.120 | 5.407 † | 0.134 | 0.054 | **0.053** | 0.066 | 0.050 | 0.218 | 0.233 | 0.234 | 0.234 | 0.200 | 0.234 |
 | cloister | 0.396 | 0.480 | 0.152 | 0.936 | 0.186 | 0.393 | **0.061** | 0.105 | 0.053 | 0.188 | 0.180 | 0.180 | 0.180 | 0.182 | 0.180 |

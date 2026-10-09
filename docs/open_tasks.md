@@ -171,6 +171,13 @@ experiment» — όχι συστηματικό· τυχαίος περίπατο
 
 **Docs (9/10):** βασικά = CLAUDE / STATUS / open_tasks / experiment_log / method_description / ral_method_text / summary_for_MT· ενοποιημένα = `results.md`, `ablations.md`, `summary_for_LG.md`, `datasets.md` — κάθε νέο αποτέλεσμα: log → STATUS → η αντίστοιχη ενότητα του `results.md` / `ablations.md`.
 
+## 9/10 (απόγευμα): πίνακες του paper — ΑΠΟΦΑΣΕΙΣ Μ.Τ. (#248)
+
+- **Σύνολο:** και οι 84 ακολουθίες (`docs/datasets.md`)· stairs / dynamic_spinning χωριστά ως ειδικές. **Σπόροι:** s0–s3 (`results_table.py --seeds`, προεπιλογή). **Κατάρρευση = αποτυχία** (✗ crash). **Μετρικές:** APE (επίσημο πρωτόκολλο) + RTE όπου το GT είναι πυκνό με προσανατολισμό· RPE 1 m μόνο στις φορητές· στα οχήματα RTE (επίσημη μετρική του Boreas) + APE.
+- **Σε εξέλιξη:** `scripts/paper_tables.py` — όλοι οι πίνακες από τα runs με ένα σενάριο, έλεγχος έναντι του `results.md`.
+- **Εκκρεμούν:** επικύρωση Λ.Γ. (όλα ⏳ από 23/9, και το πλαίσιο «μεγάλη βελτίωση του KISS-SLAM, όχι νέα κορυφή»)· χρόνος σε laptop· upright ORB 4 σπόροι (#231, χρειάζεται runs)· σχήματα· τελικός πίνακας ablation.
+- **Κλειστά 9/10:** έλεγχος κώδικα (#242), αποτελεσμάτων / αξιολόγησης (#243), διορθώσεις αξιολόγησης (#245 / #246), GenZ στους διαδρόμους (#244), υβριδική αρχή — όχι (#247).
+
 ## 9/10: Hilti 2021 + 2022 — log #238–#240 (κλάδος `matching_intensities`)
 
 - **Δεδομένα:** `Extreme SSD/hilti_2021/` (6 νέες) + `kiss_data/hilti_2021/` (6 παλιές), `Extreme SSD/hilti_2022/` (16)· λίστα `kiss_runs/hilti_new.tsv` (22)· `docs/datasets.md` §Hilti.

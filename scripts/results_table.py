@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """All results in one table: every sequence x arm, mean ± σ over its runs, against the ground truth.
 
-    python scripts/results_table.py [<data root>] [--out=<prefix>] [--all-arms] [--extra=/home/photogrammetry/kiss_runs]
+    python scripts/results_table.py [<data root>] [--out=<prefix>] [--all-arms] [--extra=/home/photogrammetry/kiss_runs] [--seeds=0,1,2,3|all]
                                     [--runs=<dir>[,<dir>...]]
                                     [--legacy [--offset=best]]
 
@@ -42,6 +42,9 @@ NC, RUNS = ROOT / "newer_college", ROOT / "runs"
 EXTRA = Path(next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("--extra=")), "/home/photogrammetry/kiss_runs"))
 # More run roots with the layout of EXTRA (#081: the external exFAT SSD), read only.
 MORE_RUNS = [Path(d) for a in sys.argv[1:] if a.startswith("--runs=") for d in a.split("=", 1)[1].split(",") if d]
+# ΑΠΟΦΑΣΗ Μ.Τ. 9/10 (#248): the paper uses seeds s0-s3 only (christ-church-02 also has s4-s7 of base092 / bd137); --seeds=all for every seed
+_SEEDS = next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("--seeds=")), "0,1,2,3")
+SEEDS = None if _SEEDS == "all" else {int(s) for s in _SEEDS.split(",")}
 # Written to EXTRA (ext4), never to the NTFS data disk: ntfs3 kernel BUG on writes (#046, #052; decision M.T. 24/9).
 OUT = Path(next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("--out=")),
                 EXTRA / ("results_official" if OFFICIAL else "results_all_best_offset" if OFFSET == "best" else "results_all")))
@@ -254,6 +257,9 @@ def main():
                 # #237: or the pipeline's final metrics table (KISS-SLAM arms have no image-motion line)
                 if (p.is_dir() and log.exists() and ("\nwall " in txt or "KissSLAM| image motion:" in txt or "Number of closures found" in txt)
                         and any(p.glob("*/*_poses_tum.txt"))):
+                    m = re.search(r"_s(\d+)$", p.name)
+                    if SEEDS is not None and m and int(m[1]) not in SEEDS:
+                        continue
                     found[p.name] = p
         runs = [found[k] for k in sorted(found)]
         if not runs:
